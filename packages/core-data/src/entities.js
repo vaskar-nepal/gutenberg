@@ -35,6 +35,12 @@ export const defaultEntities = [
 		transientEdits: { blocks: true },
 	},
 	{ name: 'user', kind: 'root', baseURL: '/wp/v2/users', plural: 'users' },
+	{
+		name: 'comment',
+		kind: 'root',
+		baseURL: '/wp/v2/comments',
+		plural: 'comments',
+	},
 ];
 
 export const kinds = [
