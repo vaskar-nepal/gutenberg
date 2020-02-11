@@ -27,6 +27,10 @@ export const settings = {
 		align: true,
 		alignWide: false,
 	},
+	styles: [
+		{ name: 'horizontal', label: __( 'Horizontal' ), isDefault: true },
+		{ name: 'vertical', label: __( 'Vertical' ) },
+	],
 	transforms,
 	edit,
 	save,
