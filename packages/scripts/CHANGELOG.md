@@ -1,5 +1,9 @@
 ## Master
 
+### Enhancement
+
+- The bundled `puppeteer` (`^2.0.0`) dependency has been replaced with `puppeteer-core` in version `2.1.1`. It allowed preventing Chromium installation together with `@wordpress/scripts`. It happens now on-demand when running `test-e2e` script and only when a new version is required.
+
 ## 7.1.0 (2020-02-10)
 
 ### Bug Fixes
