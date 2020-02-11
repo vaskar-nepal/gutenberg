@@ -25,6 +25,7 @@ import BlockListAppender from '../block-list-appender';
 import BlockInsertionPoint from './insertion-point';
 import __experimentalBlockListFooter from '../block-list-footer';
 import OverflowView from '../../../../../../react-native-overflow-view/src/OverflowView';
+import { getBlockType } from '@wordpress/blocks';
 
 const innerToolbarHeight = 44;
 
@@ -109,7 +110,7 @@ export class BlockList extends Component {
 		return (
 			<View
 				style={ { flex: isRootList ? 1 : 0 } }
-				hitSlop={{top: 44}}
+				hitSlop={ { top: 44 } }
 				onAccessibilityEscape={ clearSelectedBlock }
 			>
 				<KeyboardAwareFlatList
@@ -118,7 +119,7 @@ export class BlockList extends Component {
 						: {} ) } // Disable clipping on Android to fix focus losing. See https://github.com/wordpress-mobile/gutenberg-mobile/pull/741#issuecomment-472746541
 					accessibilityLabel="block-list"
 					autoScroll={ this.props.autoScroll }
-					hitSlop={{top: 44}}
+					hitSlop={ { top: 44 } }
 					innerRef={ this.scrollViewInnerRef }
 					extraScrollHeight={ innerToolbarHeight + 10 }
 					keyboardShouldPersistTaps="always"
@@ -162,9 +163,10 @@ export class BlockList extends Component {
 		} = this.props;
 
 		return (
-			<ReadableContentView hitSlop={{top: 44}}>
-				<View pointerEvents={ isReadOnly ? 'box-only' : 'auto' }
-					hitSlop={{top: 44}}
+			<ReadableContentView hitSlop={ { top: 44 } }>
+				<View
+					pointerEvents={ isReadOnly ? 'box-only' : 'auto' }
+					hitSlop={ { top: 44 } }
 				>
 					{ shouldShowInsertionPointBefore( clientId ) && (
 						<BlockInsertionPoint />
@@ -178,7 +180,7 @@ export class BlockList extends Component {
 							this.onCaretVerticalPositionChange
 						}
 						isSmallScreen={ ! this.props.isFullyBordered }
-						hitSlop={{top: 44}}
+						hitSlop={ { top: 44 } }
 					/>
 					{ ! this.shouldShowInnerBlockAppender() &&
 						shouldShowInsertionPointAfter( clientId ) && (
@@ -205,18 +207,17 @@ export class BlockList extends Component {
 		);
 	}
 
-	cellRenderer( {children, item: clientId } ) {
-		const {
-			isBlockSelected,
-			hasSelectedInnerBlock,
-		} = this.props;
-		const isSelected = (isBlockSelected( clientId ) || hasSelectedInnerBlock( clientId ));
-		
+	cellRenderer( { children, index, item } ) {
+		const { isBlockSelected, hasSelectedInnerBlock } = this.props;
+		const isSelected = isBlockSelected( item.clientId );
+
 		return (
-			<OverflowView 
-				hitSlop={{top: (isSelected?44:0)}}
+			<OverflowView
+				zIndex={ index }
+				hitSlop={ { top: isSelected ? 44 : 0 } }
+				accessibilityLabel={ 'Row ' + index }
 			>
-				{children}
+				{ children }
 			</OverflowView>
 		);
 	}

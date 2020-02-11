@@ -120,6 +120,7 @@ class InnerBlocks extends Component {
 						renderAppender={ renderAppender }
 						withFooter={ false }
 						isFullyBordered={ true }
+						hitSlop={ { top: 44 } }
 					/>
 				) }
 			</>
