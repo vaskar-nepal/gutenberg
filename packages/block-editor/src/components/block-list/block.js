@@ -310,9 +310,9 @@ function BlockListBlock( {
 			style={
 				wrapperProps && wrapperProps.style
 					? {
-						...wrapperProps.style,
-						...animationStyle,
-					}
+							...wrapperProps.style,
+							...animationStyle,
+					  }
 					: animationStyle
 			}
 		>
