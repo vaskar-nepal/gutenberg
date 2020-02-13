@@ -6,7 +6,7 @@ import { compose } from '@wordpress/compose';
 import { InnerBlocks, __experimentalUseColors } from '@wordpress/block-editor';
 import { useRef } from '@wordpress/element';
 
-function GroupEdit( { hasInnerBlocks, className } ) {
+function GroupEdit( { attributes, hasInnerBlocks, className } ) {
 	const ref = useRef();
 	const {
 		TextColor,
@@ -22,13 +22,14 @@ function GroupEdit( { hasInnerBlocks, className } ) {
 			colorDetector: { targetRef: ref },
 		}
 	);
+	const Tag = attributes.tagName;
 
 	return (
 		<>
 			{ InspectorControlsColorPanel }
 			<BackgroundColor>
 				<TextColor>
-					<div className={ className } ref={ ref }>
+					<Tag className={ className } ref={ ref }>
 						<div className="wp-block-group__inner-container">
 							<InnerBlocks
 								renderAppender={
@@ -37,7 +38,7 @@ function GroupEdit( { hasInnerBlocks, className } ) {
 								}
 							/>
 						</div>
-					</div>
+					</Tag>
 				</TextColor>
 			</BackgroundColor>
 		</>

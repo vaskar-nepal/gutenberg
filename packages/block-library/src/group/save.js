@@ -14,6 +14,7 @@ export default function save( { attributes } ) {
 		customBackgroundColor,
 		textColor,
 		customTextColor,
+		tagName: Tag,
 	} = attributes;
 
 	const backgroundClass = getColorClassName(
@@ -32,10 +33,10 @@ export default function save( { attributes } ) {
 	};
 
 	return (
-		<div className={ className } style={ styles }>
+		<Tag className={ className } style={ styles }>
 			<div className="wp-block-group__inner-container">
 				<InnerBlocks.Content />
 			</div>
-		</div>
+		</Tag>
 	);
 }
