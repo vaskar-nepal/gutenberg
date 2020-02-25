@@ -49,7 +49,9 @@ function Editor( { settings: _settings } ) {
 		setSettings,
 	] );
 	return template ? (
-		<GlobalStylesStateProvider>
+		<GlobalStylesStateProvider
+			baseStyle={ settings.__experimentalGlobalStylesBase }
+		>
 			<SlotFillProvider>
 				<DropZoneProvider>
 					<EntityProvider kind="root" type="site">
