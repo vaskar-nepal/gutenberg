@@ -50,7 +50,8 @@ function Editor( { settings: _settings } ) {
 	] );
 	return template ? (
 		<GlobalStylesStateProvider
-			baseStyle={ settings.__experimentalGlobalStylesBase }
+			userEntityId={ settings.__experimentalGlobalStylesUserEntityId }
+			baseStyles={ settings.__experimentalGlobalStylesBase }
 		>
 			<SlotFillProvider>
 				<DropZoneProvider>
