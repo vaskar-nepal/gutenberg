@@ -17,7 +17,7 @@ import {
 import { EntityProvider } from '@wordpress/core-data';
 import { __experimentalEditorSkeleton as EditorSkeleton } from '@wordpress/block-editor';
 import { useViewportMatch } from '@wordpress/compose';
-import { GlobalStylesStateProvider } from '@wordpress/global-styles';
+import { GlobalStylesProvider } from '@wordpress/global-styles';
 
 /**
  * Internal dependencies
@@ -49,7 +49,7 @@ function Editor( { settings: _settings } ) {
 		setSettings,
 	] );
 	return template ? (
-		<GlobalStylesStateProvider
+		<GlobalStylesProvider
 			userEntityId={ settings.__experimentalGlobalStylesUserEntityId }
 			baseStyles={ settings.__experimentalGlobalStylesBase }
 		>
@@ -81,7 +81,7 @@ function Editor( { settings: _settings } ) {
 					</EntityProvider>
 				</DropZoneProvider>
 			</SlotFillProvider>
-		</GlobalStylesStateProvider>
+		</GlobalStylesProvider>
 	) : null;
 }
 export default Editor;

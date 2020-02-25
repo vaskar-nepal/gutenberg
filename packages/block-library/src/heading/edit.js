@@ -26,7 +26,7 @@ import { useRef } from '@wordpress/element';
 import {
 	GlobalStylesControls,
 	GlobalStylesPanelBody,
-	useGlobalStylesState,
+	useGlobalStylesContext,
 } from '@wordpress/global-styles';
 
 function HeadingEdit( {
@@ -37,7 +37,7 @@ function HeadingEdit( {
 	className,
 } ) {
 	const ref = useRef();
-	const { headingFontWeight, setStyles } = useGlobalStylesState();
+	const { headingFontWeight, setStyles } = useGlobalStylesContext();
 	const { TextColor, InspectorControlsColorPanel } = __experimentalUseColors(
 		[ { name: 'textColor', property: 'color' } ],
 		{

@@ -33,7 +33,7 @@ import { formatLtr } from '@wordpress/icons';
 import {
 	GlobalStylesControls,
 	GlobalStylesPanelBody,
-	useGlobalStylesState,
+	useGlobalStylesContext,
 } from '@wordpress/global-styles';
 
 /**
@@ -99,7 +99,7 @@ function ParagraphBlock( {
 		paragraphColor,
 		paragraphLineHeight,
 		setStyles,
-	} = useGlobalStylesState();
+	} = useGlobalStylesContext();
 
 	const ref = useRef();
 	const dropCapMinimumHeight = useDropCapMinimumHeight( dropCap, [
