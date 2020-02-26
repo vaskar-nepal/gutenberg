@@ -38,7 +38,8 @@ function HeadingEdit( {
 } ) {
 	const ref = useRef();
 	const {
-		typography: { fontWeightHeading, setStyles },
+		typography: { fontWeightHeading },
+		setTypography,
 	} = useGlobalStylesContext();
 	const { TextColor, InspectorControlsColorPanel } = __experimentalUseColors(
 		[ { name: 'textColor', property: 'color' } ],
@@ -76,7 +77,7 @@ function HeadingEdit( {
 						label={ __( 'Font Weight' ) }
 						value={ fontWeightHeading }
 						onChange={ ( nextValue ) =>
-							setStyles( { fontWeightHeading: nextValue } )
+							setTypography( { fontWeightHeading: nextValue } )
 						}
 						min={ 100 }
 						max={ 900 }
