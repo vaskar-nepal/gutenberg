@@ -12,7 +12,7 @@ import HeadingToolbar from './heading-toolbar';
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { PanelBody, RangeControl } from '@wordpress/components';
+import { PanelBody } from '@wordpress/components';
 import { createBlock } from '@wordpress/blocks';
 import {
 	AlignmentToolbar,
@@ -23,12 +23,6 @@ import {
 } from '@wordpress/block-editor';
 import { useRef } from '@wordpress/element';
 
-import {
-	GlobalStylesControls,
-	GlobalStylesPanelBody,
-	useGlobalStylesContext,
-} from '@wordpress/global-styles';
-
 function HeadingEdit( {
 	attributes,
 	setAttributes,
@@ -37,10 +31,6 @@ function HeadingEdit( {
 	className,
 } ) {
 	const ref = useRef();
-	const {
-		typography: { fontWeightHeading },
-		setTypography,
-	} = useGlobalStylesContext();
 	const { TextColor, InspectorControlsColorPanel } = __experimentalUseColors(
 		[ { name: 'textColor', property: 'color' } ],
 		{
@@ -71,20 +61,6 @@ function HeadingEdit( {
 					} }
 				/>
 			</BlockControls>
-			<GlobalStylesControls>
-				<GlobalStylesPanelBody title={ __( 'Heading' ) }>
-					<RangeControl
-						label={ __( 'Font Weight' ) }
-						value={ fontWeightHeading }
-						onChange={ ( nextValue ) =>
-							setTypography( { fontWeightHeading: nextValue } )
-						}
-						min={ 100 }
-						max={ 900 }
-						step={ 100 }
-					/>
-				</GlobalStylesPanelBody>
-			</GlobalStylesControls>
 			<InspectorControls>
 				<PanelBody title={ __( 'Heading settings' ) }>
 					<p>{ __( 'Level' ) }</p>
