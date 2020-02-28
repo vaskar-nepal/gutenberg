@@ -18,7 +18,7 @@ const rimraf = util.promisify( require( 'rimraf' ) );
 const copyDir = util.promisify( require( 'copy-dir' ) );
 
 /**
- * @typedef {import('./config').Source} Source
+ * @typedef {import('./config').WPSource} WPSource
  */
 
 /**

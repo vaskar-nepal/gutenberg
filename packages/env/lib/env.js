@@ -24,7 +24,9 @@ const downloadSource = require( './download-source' );
 const buildDockerComposeConfig = require( './build-docker-compose-config' );
 
 /**
- * @typedef {import('./config').Config} Config
+ * @typedef {import('./config').WPConfig} WPConfig
+ * @typedef {'development'|'tests'} WPEnvironment
+ * @typedef {'development'|'tests'|'all'} WPEnvironmentSelection
  */
 
 module.exports = {
@@ -173,10 +175,10 @@ module.exports = {
 	/**
 	 * Wipes the development server's database, the tests server's database, or both.
 	 *
-	 * @param {Object}  options
-	 * @param {string}  options.environment The environment to clean. Either 'development', 'tests', or 'all'.
-	 * @param {Object}  options.spinner     A CLI spinner which indicates progress.
-	 * @param {boolean} options.debug       True if debug mode is enabled.
+	 * @param {Object}                 options
+	 * @param {WPEnvironmentSelection} options.environment The environment to clean. Either 'development', 'tests', or 'all'.
+	 * @param {Object}                 options.spinner     A CLI spinner which indicates progress.
+	 * @param {boolean}                options.debug       True if debug mode is enabled.
 	 */
 	async clean( { environment, spinner, debug } ) {
 		const config = await initConfig( { spinner, debug } );
@@ -304,7 +306,7 @@ async function checkForLegacyInstall( spinner ) {
  * @param {Object}  options.spinner A CLI spinner which indicates progress.
  * @param {boolean} options.debug   True if debug mode is enabled.
  *
- * @return {Config} The-env config object.
+ * @return {WPConfig} The-env config object.
  */
 async function initConfig( { spinner, debug } ) {
 	const configPath = path.resolve( '.wp-env.json' );
@@ -376,8 +378,8 @@ async function copyCoreFiles( fromPath, toPath ) {
  *
  * See https://github.com/docker-library/wordpress/issues/436.
  *
- * @param {string} environment The environment to check. Either 'development' or 'tests'.
- * @param {Config} config The wp-env config object.
+ * @param {WPEnvironment} environment The environment to check. Either 'development' or 'tests'.
+ * @param {WPConfig}      config      The wp-env config object.
  */
 async function makeContentDirectoriesWritable(
 	environment,
@@ -419,7 +421,7 @@ async function retry( action, { times, delay = 5000 } ) {
  * Checks a WordPress database connection. An error is thrown if the test is
  * unsuccessful.
  *
- * @param {Config} config The wp-env config object.
+ * @param {WPConfig} config The wp-env config object.
  */
 async function checkDatabaseConnection( { dockerComposeConfigPath, debug } ) {
 	await dockerCompose.run( 'cli', 'wp db check', {
@@ -434,8 +436,8 @@ async function checkDatabaseConnection( { dockerComposeConfigPath, debug } ) {
  * activating all plugins, and activating the first theme. These steps are
  * performed sequentially so as to not overload the WordPress instance.
  *
- * @param {string} environment The environment to configure. Either 'development' or 'tests'.
- * @param {Config} config The wp-env config object.
+ * @param {WPEnvironment} environment The environment to configure. Either 'development' or 'tests'.
+ * @param {WPConfig}      config      The wp-env config object.
  */
 async function configureWordPress( environment, config ) {
 	const options = {
@@ -495,8 +497,8 @@ async function configureWordPress( environment, config ) {
 /**
  * Resets the development server's database, the tests server's database, or both.
  *
- * @param {string} environment The environment to clean. Either 'development', 'tests', or 'all'.
- * @param {Config} config The wp-env config object.
+ * @param {WPEnvironmentSelection} environment The environment to clean. Either 'development', 'tests', or 'all'.
+ * @param {WPConfig}               config      The wp-env config object.
  */
 async function resetDatabase(
 	environment,
