@@ -6,15 +6,15 @@
 	&__byline {
 		width: 100%;
 		margin-top: 0;
-		margin-bottom: $grid-size-large;
+		margin-bottom: $grid-unit-20;
 	}
 
 	&__avatar {
-		margin-right: $grid-size-large;
+		margin-right: $grid-unit-20;
 	}
 
 	&__bio {
-		margin-top: $grid-size-large;
+		margin-top: $grid-unit-20;
 	}
 
 	&__content {
