@@ -57,7 +57,7 @@ There are two types of dependencies that you might want to add to one of the exi
 Production dependencies are stored in the `dependencies` section of the package’s `package.json` file.
 
 #### Adding New Dependencies
- 
+
 The simplest way to add a production dependency to one of the packages is to run a very convenient [lerna add](https://github.com/lerna/lerna/tree/master/commands/add#readme) command from the root of the project.
 
 _Example:_
@@ -80,8 +80,8 @@ _Example:_
                 "check-node-version": "^3.1.1",
                 "cross-spawn": "^5.1.0",
                 "eslint": "^5.16.0",
--               "jest": "^24.7.1",
-                "jest-puppeteer": "^4.0.0",
+-               "jest": "^25.1.0",
+                "jest-puppeteer": "^4.4.0",
                 "minimist": "^1.2.0",
                 "npm-package-json-lint": "^3.6.0",
 ```
@@ -93,7 +93,7 @@ Next, you need to run `npm install` in the root of the project to ensure that `p
 This is the most confusing part of working with [lerna] which causes a lot of hassles for contributors. The most successful strategy so far is to do the following:
  1. First, remove the existing dependency as described in the previous section.
  2. Next, add the same dependency back as described in the first section of this chapter. This time it wil get the latest version applied unless you enforce a different version explicitly.
- 
+
 ### Development Dependencies
 
 In contrast to production dependencies, development dependencies shouldn't be stored in individual WordPress packages. Instead they should be installed in the project's `package.json` file using the usual `npm install` command. In effect, all development tools are configured to work with every package at the same time to ensure they share the same characteristics and integrate correctly with each other.
