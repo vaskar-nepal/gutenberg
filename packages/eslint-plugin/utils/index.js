@@ -2,11 +2,24 @@ const TRANSLATION_FUNCTIONS = [ '__', '_x', '_n', '_nx' ];
 
 /**
  * Regular expression matching the presence of a printf format string
- * placeholder. This naive pattern which does not validate the format.
+ * placeholder.
+ *
+ * Originally copied from http://php.net/manual/en/function.sprintf.php#93552.
+ *
+ * @see https://github.com/WordPress/WordPress-Coding-Standards/blob/2f927b0ba2bfcbffaa8f3251c086e109302d6622/WordPress/Sniffs/WP/I18nSniff.php#L37-L60
  *
  * @type {RegExp}
  */
-const REGEXP_PLACEHOLDER = /%[^%]/g;
+const SPRINTF_PLACEHOLDER_REGEX = /(?:(?<!%)(%(?:[0-9]+\$)?[+-]?(?:(?:0|\'.)?-?[0-9]*(?:\.(?:[ 0]|\'.)?[0-9]+)?|(?:[ ])?-?[0-9]+(?:\.(?:[ 0]|\'.)?[0-9]+)?)[bcdeEfFgGosuxX]))/g;
+
+/**
+ * "Unordered" means there's no position specifier: '%s', not '%2$s'.
+ *
+ * @see https://github.com/WordPress/WordPress-Coding-Standards/blob/2f927b0ba2bfcbffaa8f3251c086e109302d6622/WordPress/Sniffs/WP/I18nSniff.php#L62-L81
+ *
+ * @type {RegExp}
+ */
+const UNORDERED_SPRINTF_PLACEHOLDER_REGEX = /(?:(?<!%)%[+-]?(?:(?:0|'.)?-?[0-9]*(?:\.(?:[ 0]|'.)?[0-9]+)?|(?:[ ])?-?[0-9]+(?:\.(?:[ 0]|'.)?[0-9]+)?)[bcdeEfFgGosuxX])/;
 
 /**
  * Given a function name and array of argument Node values, returns all
@@ -41,6 +54,7 @@ function getTranslateStrings( functionName, args ) {
 
 module.exports = {
 	TRANSLATION_FUNCTIONS,
-	REGEXP_PLACEHOLDER,
+	SPRINTF_PLACEHOLDER_REGEX,
+	UNORDERED_SPRINTF_PLACEHOLDER_REGEX,
 	getTranslateStrings,
 };
