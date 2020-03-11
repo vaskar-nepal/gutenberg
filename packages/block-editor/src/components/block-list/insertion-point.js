@@ -33,7 +33,7 @@ function Indicator( { clientId } ) {
 			return (
 				isBlockInsertionPointVisible() &&
 				insertionPoint.index === blockIndex &&
-				insertionPoint.rootClientId === rootClientId
+				( insertionPoint.rootClientId || '' ) === rootClientId
 			);
 		},
 		[ clientId ]
@@ -61,15 +61,19 @@ export default function InsertionPoint( {
 	const [ inserterElement, setInserterElement ] = useState( null );
 	const [ inserterClientId, setInserterClientId ] = useState( null );
 	const ref = useRef();
-	const { multiSelectedBlockClientIds } = useSelect( ( select ) => {
-		const { getMultiSelectedBlockClientIds } = select(
-			'core/block-editor'
-		);
+	const { multiSelectedBlockClientIds, isInserterVisible } = useSelect(
+		( select ) => {
+			const {
+				getMultiSelectedBlockClientIds,
+				isBlockInsertionPointVisible,
+			} = select( 'core/block-editor' );
 
-		return {
-			multiSelectedBlockClientIds: getMultiSelectedBlockClientIds(),
-		};
-	} );
+			return {
+				multiSelectedBlockClientIds: getMultiSelectedBlockClientIds(),
+				isInserterVisible: isBlockInsertionPointVisible(),
+			};
+		}
+	);
 
 	function onMouseMove( event ) {
 		if ( event.target.className !== className ) {
@@ -138,10 +142,11 @@ export default function InsertionPoint( {
 	const isInserterHidden = hasMultiSelection
 		? multiSelectedBlockClientIds.includes( inserterClientId )
 		: inserterClientId === selectedBlockClientId;
+	const isVisible = isInserterShown || isInserterForced || isInserterVisible;
 
 	return (
 		<>
-			{ ! isMultiSelecting && ( isInserterShown || isInserterForced ) && (
+			{ ! isMultiSelecting && isVisible && (
 				<Popover
 					noArrow
 					animate={ false }
