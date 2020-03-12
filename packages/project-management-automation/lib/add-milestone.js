@@ -9,13 +9,11 @@ const debug = require( './debug' );
 /** @typedef {import('@octokit/rest').Response} OctokitResponse */
 /** @typedef {import('@octokit/rest').IssuesListMilestonesForRepoResponse} OctokitIssuesListMilestonesForRepoResponse */
 
-// Milestone due dates are calculated from a known due date:
-// 6.3, which was due on August 12 2019.
-const REFERENCE_MAJOR = 6;
-const REFERENCE_MINOR = 3;
-const REFERENCE_DATE = '2019-08-12';
-
-// Releases are every 14 days.
+/**
+ * Number of expected days elapsed between releases.
+ *
+ * @type {number}
+ */
 const DAYS_PER_RELEASE = 14;
 
 /**
@@ -34,6 +32,37 @@ const DAYS_PER_RELEASE = 14;
 const isDuplicateValidationError = ( error ) =>
 	Array.isArray( error.errors ) &&
 	error.errors.some( ( { code } ) => code === 'already_exists' );
+
+/**
+ * Returns a promise resolving to a milestone by a given title, if exists.
+ *
+ * @param {GitHub} octokit Initialized Octokit REST client.
+ * @param {string} owner   Repository owner.
+ * @param {string} repo    Repository name.
+ * @param {string} title   Milestone title.
+ *
+ * @return {Promise<import('@octokit/rest').IssuesListMilestonesForRepoResponseItem|void>}
+ */
+async function getMilestoneByTitle( octokit, owner, repo, title ) {
+	const options = octokit.issues.listMilestonesForRepo.endpoint.merge( {
+		owner,
+		repo,
+	} );
+
+	/**
+	 * @type {AsyncIterableIterator<import('@octokit/rest').Response<import('@octokit/rest').IssuesListMilestonesForRepoResponse>>}
+	 */
+	const responses = octokit.paginate.iterator( options );
+
+	for await ( const response of responses ) {
+		const milestones = response.data;
+		for ( const milestone of milestones ) {
+			if ( milestone.title === title ) {
+				return milestone;
+			}
+		}
+	}
+}
 
 /**
  * Assigns the correct milestone to PRs once merged.
@@ -55,16 +84,14 @@ async function addMilestone( payload, octokit ) {
 	}
 
 	debug( 'add-milestone: Fetching current milestone' );
+	const owner = payload.repository.owner.login;
+	const repo = payload.repository.name;
 
 	const {
-		data: { milestone },
-	} = await octokit.issues.get( {
-		owner: payload.repository.owner.login,
-		repo: payload.repository.name,
-		issue_number: prNumber,
-	} );
+		data: { milestone: pullMilestone },
+	} = await octokit.issues.get( { owner, repo, issue_number: prNumber } );
 
-	if ( milestone ) {
+	if ( pullMilestone ) {
 		debug(
 			'add-milestone: Pull request already has a milestone. Aborting'
 		);
@@ -76,8 +103,8 @@ async function addMilestone( payload, octokit ) {
 	const {
 		data: { content, encoding },
 	} = await octokit.repos.getContents( {
-		owner: payload.repository.owner.login,
-		repo: payload.repository.name,
+		owner,
+		repo,
 		path: 'package.json',
 	} );
 
@@ -89,6 +116,20 @@ async function addMilestone( payload, octokit ) {
 
 	debug( `add-milestone: Current plugin version is ${ major }.${ minor }` );
 
+	const lastTitle = `Gutenberg ${ major }.${ minor }`;
+	const lastMilestone = await getMilestoneByTitle(
+		octokit,
+		owner,
+		repo,
+		lastTitle
+	);
+
+	if ( ! lastMilestone ) {
+		throw new Error(
+			'Could not find milestone for current version: ' + lastTitle
+		);
+	}
+
 	if ( minor === 9 ) {
 		major += 1;
 		minor = 0;
@@ -96,13 +137,9 @@ async function addMilestone( payload, octokit ) {
 		minor += 1;
 	}
 
-	const numVersionsElapsed =
-		( major - REFERENCE_MAJOR ) * 10 + ( minor - REFERENCE_MINOR );
-	const numDaysElapsed = numVersionsElapsed * DAYS_PER_RELEASE;
-
 	// Using UTC for the calculation ensures it's not affected by daylight savings.
-	const dueDate = new Date( REFERENCE_DATE );
-	dueDate.setUTCDate( dueDate.getUTCDate() + numDaysElapsed );
+	const dueDate = new Date( lastMilestone.due_on );
+	dueDate.setUTCDate( dueDate.getUTCDate() + DAYS_PER_RELEASE );
 
 	debug(
 		`add-milestone: Creating 'Gutenberg ${ major }.${ minor }' milestone, due on ${ dueDate.toISOString() }`
@@ -110,8 +147,8 @@ async function addMilestone( payload, octokit ) {
 
 	try {
 		await octokit.issues.createMilestone( {
-			owner: payload.repository.owner.login,
-			repo: payload.repository.name,
+			owner,
+			repo,
 			title: `Gutenberg ${ major }.${ minor }`,
 			due_on: dueDate.toISOString(),
 		} );
@@ -129,24 +166,28 @@ async function addMilestone( payload, octokit ) {
 
 	debug( 'add-milestone: Fetching all milestones' );
 
-	const { data: milestones } = await octokit.issues.listMilestonesForRepo( {
-		owner: payload.repository.owner.login,
-		repo: payload.repository.name,
-	} );
+	const title = `Gutenberg ${ major }.${ minor }`;
 
-	const [ { number } ] = milestones.filter(
-		( { title } ) => title === `Gutenberg ${ major }.${ minor }`
+	const milestone = await getMilestoneByTitle(
+		octokit,
+		payload.repository.owner.login,
+		payload.repository.name,
+		title
 	);
 
+	if ( ! milestone ) {
+		throw new Error( 'Could not rediscover milestone by title: ' + title );
+	}
+
 	debug(
-		`add-milestone: Adding issue #${ prNumber } to milestone #${ number }`
+		`add-milestone: Adding issue #${ prNumber } to milestone #${ milestone.number }`
 	);
 
 	await octokit.issues.update( {
-		owner: payload.repository.owner.login,
-		repo: payload.repository.name,
+		owner,
+		repo,
 		issue_number: prNumber,
-		milestone: number,
+		milestone: milestone.number,
 	} );
 }
 
