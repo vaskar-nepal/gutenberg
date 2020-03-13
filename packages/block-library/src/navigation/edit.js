@@ -61,12 +61,7 @@ function Navigation( {
 	const ref = useRef();
 	const { selectBlock } = useDispatch( 'core/block-editor' );
 
-	const {
-		TextColor,
-		BackgroundColor,
-		InspectorControlsColorPanel,
-		ColorPanel,
-	} = __experimentalUseColors(
+	const { TextColor, BackgroundColor, ColorPanel } = __experimentalUseColors(
 		[
 			{ name: 'textColor', property: 'color' },
 			{ name: 'backgroundColor', className: 'has-background' },
@@ -243,7 +238,6 @@ function Navigation( {
 					/>
 				</PanelBody>
 			</InspectorControls>
-			{ InspectorControlsColorPanel }
 			<InspectorControls>
 				<PanelBody title={ __( 'Display settings' ) }>
 					<ToggleControl
