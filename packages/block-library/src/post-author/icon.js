@@ -1,15 +1,12 @@
 /**
  * WordPress dependencies
  */
-import { Circle, Path, SVG } from '@wordpress/components';
+import { Path, SVG } from '@wordpress/components';
 
 export default (
-	<SVG width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+	<SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 		<Path
-			d="M13 12v-1a2 2 0 00-2-2H7a2 2 0 00-2 2v1M4 19.25h9M4 15.25h16"
-			stroke="#000"
-			stroke-width="1.5"
+			d="M5.8 11c0-.7.6-1.2 1.2-1.2h4c.7 0 1.2.6 1.2 1.2v1h1.5v-1c0-1.5-1.2-2.8-2.8-2.8H7c-1.5 0-2.8 1.2-2.8 2.8v1h1.5v-1zM4 20h9v-1.5H4V20zm0-5.5V16h16v-1.5H4zM9 7c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"
 		/>
-		<Circle cx="9" cy="5" r="2" fill="#000" />
 	</SVG>
 );
