@@ -7,11 +7,12 @@ import { Platform } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { RangeControl, SelectControl } from '../';
+import { RangeControl, SelectControl, FormTokenField } from '../';
 import CategorySelect from './category-select';
 
 const DEFAULT_MIN_ITEMS = 1;
 const DEFAULT_MAX_ITEMS = 100;
+const MAX_TERMS_SUGGESTIONS = 20;
 
 // currently this is needed for consistent controls UI on mobile
 // this can be removed after control components settle on consistent defaults
@@ -27,12 +28,17 @@ const MOBILE_CONTROL_PROPS_SEPARATOR_NONE = Platform.select( {
 export default function QueryControls( {
 	categoriesList,
 	selectedCategoryId,
+	onCategoryChange,
+	selectedTags,
+	suggestedTags,
+	onTagInputChage,
+	tagsLoading,
+	onTagsChange,
 	numberOfItems,
 	order,
 	orderBy,
 	maxItems = DEFAULT_MAX_ITEMS,
 	minItems = DEFAULT_MIN_ITEMS,
-	onCategoryChange,
 	onNumberOfItemsChange,
 	onOrderChange,
 	onOrderByChange,
@@ -84,6 +90,17 @@ export default function QueryControls( {
 				selectedCategoryId={ selectedCategoryId }
 				onChange={ onCategoryChange }
 				{ ...MOBILE_CONTROL_PROPS }
+			/>
+		),
+		onTagsChange && (
+			<FormTokenField
+				value={ selectedTags }
+				suggestions={ suggestedTags }
+				onChange={ onTagsChange }
+				onInputChange={ onTagInputChage }
+				maxSuggestions={ MAX_TERMS_SUGGESTIONS }
+				disabled={ tagsLoading }
+				label={ __( 'Filter by tags' ) }
 			/>
 		),
 		onNumberOfItemsChange && (
